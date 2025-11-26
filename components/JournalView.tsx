@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { JournalEntry } from '../types';
 import { getJournalInsight } from '../services/geminiService';
-import { Save, Wand2, Trash2, Calendar } from 'lucide-react';
+import { Save, Wand2, Trash2, Calendar, Feather } from 'lucide-react';
 
 export const JournalView: React.FC = () => {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
@@ -22,7 +22,7 @@ export const JournalView: React.FC = () => {
       id: Date.now().toString(),
       date: new Date().toISOString(),
       content: text,
-      mood: 'neutral', // Simplified for this demo
+      mood: 'neutral',
       aiInsight: insight
     };
 
@@ -47,74 +47,91 @@ export const JournalView: React.FC = () => {
   };
 
   return (
-    <div className="px-6 py-6 pb-24 max-w-2xl mx-auto space-y-8">
+    <div className="px-6 py-8 pb-32 max-w-2xl mx-auto space-y-10">
       
       {/* Input Area */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-serif text-stone-800">Diário Filosófico</h2>
-        <p className="text-stone-500 text-sm">"Não admita o sono nos seus olhos macios antes de ter examinado todas as ações do dia." — Pitágoras</p>
-        
-        <div className="relative">
-          <textarea
-            value={currentText}
-            onChange={(e) => setCurrentText(e.target.value)}
-            placeholder="Sobre o que você refletiu hoje? O que você fez bem? O que poderia ter feito melhor?"
-            className="w-full h-40 p-4 rounded-xl border border-stone-200 bg-white text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-500 resize-none shadow-sm"
-          />
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-serif text-stone-900">Exame de Consciência</h2>
+          <p className="text-stone-500 text-xs uppercase tracking-widest font-semibold">
+            Reflexão Noturna
+          </p>
         </div>
-
-        <div className="flex gap-3">
-          <button
-            onClick={() => saveEntry(currentText)}
-            disabled={!currentText.trim() || analyzing}
-            className="flex-1 py-3 px-4 bg-stone-200 text-stone-800 font-medium rounded-lg hover:bg-stone-300 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <Save size={18} />
-            <span>Salvar Apenas</span>
-          </button>
-          
-          <button
-            onClick={handleAnalyzeAndSave}
-            disabled={!currentText.trim() || analyzing}
-            className="flex-1 py-3 px-4 bg-stone-800 text-white font-medium rounded-lg hover:bg-stone-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            {analyzing ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : (
-              <Wand2 size={18} />
-            )}
-            <span>Salvar & Analisar</span>
-          </button>
+        
+        <div className="relative group">
+          <div className="absolute -inset-1 bg-gradient-to-r from-stone-100 to-stone-50 rounded-xl blur opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+          <div className="relative bg-white rounded-xl shadow-[0_2px_20px_-5px_rgba(0,0,0,0.05)] border border-stone-100">
+            <textarea
+              value={currentText}
+              onChange={(e) => setCurrentText(e.target.value)}
+              placeholder="Escreva livremente aqui..."
+              className="w-full h-48 p-6 rounded-xl bg-transparent text-stone-800 placeholder-stone-300 focus:outline-none focus:ring-0 resize-none font-serif text-lg leading-relaxed"
+            />
+            
+            <div className="flex border-t border-stone-100 p-2 gap-2">
+              <button
+                onClick={() => saveEntry(currentText)}
+                disabled={!currentText.trim() || analyzing}
+                className="flex-1 py-2 px-4 text-stone-500 font-medium text-sm rounded-lg hover:bg-stone-50 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                <Save size={16} />
+                <span>Salvar</span>
+              </button>
+              
+              <button
+                onClick={handleAnalyzeAndSave}
+                disabled={!currentText.trim() || analyzing}
+                className="flex-1 py-2 px-4 bg-stone-900 text-stone-50 font-medium text-sm rounded-lg hover:bg-stone-800 transition-all shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              >
+                {analyzing ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Wand2 size={16} />
+                )}
+                <span>Analisar</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* History */}
-      <div className="space-y-6">
-        <h3 className="text-lg font-serif text-stone-700 border-b border-stone-200 pb-2">Entradas Anteriores</h3>
+      <div className="space-y-8">
+        <div className="flex items-center gap-4">
+          <div className="h-px bg-stone-200 flex-1"></div>
+          <span className="text-stone-400 text-xs font-serif italic">Memórias</span>
+          <div className="h-px bg-stone-200 flex-1"></div>
+        </div>
         
         {entries.length === 0 ? (
-          <p className="text-stone-400 italic text-center py-8">O papel está em branco, aguardando sua sabedoria.</p>
+          <div className="text-center py-12 opacity-40">
+            <Feather size={48} className="mx-auto mb-4 text-stone-300" />
+            <p className="text-stone-400 font-serif italic">O papel está em branco.</p>
+          </div>
         ) : (
           entries.map(entry => (
-            <div key={entry.id} className="bg-white p-5 rounded-xl border border-stone-200 shadow-sm space-y-3">
+            <div key={entry.id} className="group relative pl-6 border-l border-stone-200 hover:border-bronze-400 transition-colors duration-300 space-y-3">
+              <div className="absolute -left-[5px] top-0 w-[9px] h-[9px] rounded-full bg-stone-200 group-hover:bg-bronze-500 transition-colors duration-300 ring-4 ring-paper"></div>
+              
               <div className="flex justify-between items-start">
-                <div className="flex items-center text-xs text-stone-400 uppercase tracking-wider font-semibold gap-2">
-                  <Calendar size={14} />
-                  {new Date(entry.date).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
+                <div className="flex items-center text-xs text-stone-400 font-bold uppercase tracking-wider gap-2">
+                  <Calendar size={12} />
+                  {new Date(entry.date).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long' })}
                 </div>
-                <button onClick={() => deleteEntry(entry.id)} className="text-stone-300 hover:text-red-400 transition-colors">
-                  <Trash2 size={16} />
+                <button onClick={() => deleteEntry(entry.id)} className="text-stone-200 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
+                  <Trash2 size={14} />
                 </button>
               </div>
               
-              <p className="text-stone-800 whitespace-pre-wrap leading-relaxed">{entry.content}</p>
+              <p className="text-stone-800 font-serif text-base leading-relaxed opacity-90">{entry.content}</p>
               
               {entry.aiInsight && (
-                <div className="bg-stone-50 p-4 rounded-lg border-l-4 border-stone-400 mt-4">
-                  <p className="text-xs text-stone-500 font-bold uppercase mb-1 flex items-center gap-1">
-                    <Wand2 size={12} /> Insight Estoico
-                  </p>
-                  <p className="text-stone-600 text-sm italic">{entry.aiInsight}</p>
+                <div className="bg-stone-100/50 p-4 rounded-lg mt-3">
+                  <div className="flex items-center gap-2 mb-2 text-bronze-600">
+                    <Wand2 size={12} />
+                    <span className="text-[10px] font-bold uppercase tracking-widest">O Conselho do Sábio</span>
+                  </div>
+                  <p className="text-stone-600 text-sm italic font-serif leading-relaxed">{entry.aiInsight}</p>
                 </div>
               )}
             </div>

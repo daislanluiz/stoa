@@ -4,6 +4,13 @@ import { QuoteData } from "../types";
 const apiKey = process.env.API_KEY || '';
 const ai = new GoogleGenAI({ apiKey });
 
+export const FALLBACK_QUOTE: QuoteData = {
+  author: "Marco Aurélio",
+  text: "Você tem poder sobre sua mente - não sobre eventos externos. Perceba isso e você encontrará a força.",
+  reflection: "Foque apenas no que você pode controlar. O resto não merece sua ansiedade. (Modo Offline - Verifique sua conexão ou chave de API)",
+  source: "Meditações"
+};
+
 export const getDailyStoicQuote = async (): Promise<QuoteData> => {
   try {
     const model = "gemini-2.5-flash";
@@ -30,12 +37,7 @@ export const getDailyStoicQuote = async (): Promise<QuoteData> => {
     return JSON.parse(jsonText) as QuoteData;
   } catch (error) {
     console.error("Error fetching quote:", error);
-    return {
-      author: "Marco Aurélio",
-      text: "Você tem poder sobre sua mente - não sobre eventos externos. Perceba isso e você encontrará a força.",
-      reflection: "Foque apenas no que você pode controlar. O resto não merece sua ansiedade.",
-      source: "Meditações"
-    };
+    return FALLBACK_QUOTE;
   }
 };
 

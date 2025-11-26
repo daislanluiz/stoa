@@ -25,14 +25,19 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans selection:bg-stone-200">
-      <TopBar />
+    <div className="min-h-screen bg-paper text-ink font-sans selection:bg-stone-200 relative overflow-x-hidden">
+      {/* Texture Overlay */}
+      <div className="fixed inset-0 bg-noise opacity-40 pointer-events-none z-0 mix-blend-multiply"></div>
       
-      <main className="w-full">
-        {renderView()}
-      </main>
+      <div className="relative z-10 flex flex-col min-h-screen">
+        <TopBar />
+        
+        <main className="w-full flex-1">
+          {renderView()}
+        </main>
 
-      <BottomNav currentView={currentView} setView={setCurrentView} />
+        <BottomNav currentView={currentView} setView={setCurrentView} />
+      </div>
     </div>
   );
 };
